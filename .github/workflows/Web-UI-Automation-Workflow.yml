@@ -1,4 +1,4 @@
-name: Web Automation
+name: Web Automation Report
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
   automation:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # wajib agar bisa push ke gh-pages
+      contents: write   # wajib supaya bisa push ke gh-pages
 
     steps:
       # 1️⃣ Checkout repository
@@ -41,6 +41,13 @@ jobs:
       - name: Upload Test Report Artifact
         uses: actions/upload-artifact@v4
         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./build/reports/tests/test
-            publish_branch: gh-pages
+          name: cucumber-test-report
+          path: build/reports/tests/test
+
+      # 7️⃣ Deploy test report to GitHub Pages
+      - name: Deploy Test Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/reports/tests/test
+          publish_branch: gh-pages
