@@ -55,14 +55,4 @@ jobs:
 
           name: Add Report Link to Summary
           
-   # 8️⃣ Add Report Link to Summary
-      - name: Add Report Link to Summary
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const reportUrl = "https://gabylumban.github.io/Web-Automation-Test-Framework/"
-            github.actions.createWorkflowRunSummary(`
-            ## ✅ Automation Report
-            [Click here to view the latest test report](${reportUrl})
-            `)
+   
