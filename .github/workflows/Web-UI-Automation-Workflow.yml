@@ -35,7 +35,7 @@ jobs:
 
       # Execute Gradle command for running cucumber tests
       - name: Execute Test
-        run: ./gradlew cucumber
+        run: ./gradlew test
 
       # Generate and submit dependency graph
       - name: Generate and submit dependency graph
