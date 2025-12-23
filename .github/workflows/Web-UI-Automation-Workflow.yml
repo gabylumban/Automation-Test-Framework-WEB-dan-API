@@ -1,4 +1,4 @@
-name: Web Automation 
+name: Web Automation Report
 
 on:
   push:
@@ -12,10 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write   # wajib supaya bisa push ke gh-pages
-
-    defaults:
-      run:
-        working-directory: Web-test   # pastikan semua step dijalankan di folder Web-test
 
     steps:
       # 1️⃣ Checkout repository
@@ -33,37 +29,35 @@ jobs:
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v2.1.0
 
-      # 4️⃣ Setup gradlew executable
+      # 4️⃣ Set gradlew executable
       - name: Setup gradlew
+        working-directory: ./Web-test
         run: chmod +x gradlew
 
-      # 5️⃣ Run Cucumber / Gradle tests
+      # 5️⃣ Run Cucumber tests (headless)
       - name: Run Cucumber Tests
+        working-directory: ./Web-test
         run: ./gradlew test --info
 
-      # 6️⃣ Debug: list folder report (optional, bisa dihapus kalau sudah yakin)
-      - name: List Test Report
-        run: ls -R build/reports/tests/test
-
-      # 7️⃣ Upload test report as artifact
+      # 6️⃣ Upload test report as artifact (opsional)
       - name: Upload Test Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-test-report
-          path: build/reports/tests/test
+          path: Web-test/build/reports/tests/test
 
-      # 8️⃣ Deploy test report to GitHub Pages
+      # 7️⃣ Deploy test report to GitHub Pages
       - name: Deploy Test Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/reports/tests/test
+          publish_dir: ./Web-test/build/reports/tests/test
           publish_branch: gh-pages
 
-      # 9️⃣ Add Test Report link to Summary
+      # 8️⃣ Add Test Report link to Summary
       - name: Add Test Report link to Summary
         run: |
             echo "Automation Test Result" >> $GITHUB_STEP_SUMMARY
             echo "- Environment: GitHub Actions" >> $GITHUB_STEP_SUMMARY
             echo "- Report Type: Gradle Test Report" >> $GITHUB_STEP_SUMMARY
-            echo "- Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html" >> $GITHUB_STEP_SUMMARY
+            echo "- Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
