@@ -11,7 +11,7 @@ jobs:
   automation:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # wajib supaya bisa push ke gh-pages
+      contents: write   # perlu supaya bisa push ke gh-pages
 
     steps:
       # 1️⃣ Checkout repository
@@ -27,18 +27,20 @@ jobs:
 
       # 3️⃣ Setup gradlew executable di folder OtomasiAPI
       - name: Setup gradlew
-        run: chmod +x ./OtomasiAPI/gradlew
+        run: chmod +x gradlew
+        working-directory: ./OtomasiAPI
 
-      # 4️⃣ Run Gradle tests (API automation)
+      # 4️⃣ Run JUnit / Cucumber API Tests
       - name: Run API Tests
-        run: ./OtomasiAPI/gradlew test --info
+        run: ./gradlew test --info
+        working-directory: ./OtomasiAPI
 
       # 5️⃣ Upload test report sebagai artifact
       - name: Upload Test Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
-          path: ./OtomasiAPI/build/reports/tests/test
+          path: OtomasiAPI/build/reports/tests/test
 
       # 6️⃣ Deploy test report ke GitHub Pages
       - name: Deploy Test Report to GitHub Pages
@@ -47,10 +49,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./OtomasiAPI/build/reports/tests/test
           publish_branch: gh-pages
-          user_name: github-actions
-          user_email: github-actions@github.com
+          user_name: 'github-actions'
+          user_email: 'github-actions@github.com'
 
-      # 7️⃣ Tambahkan link ke Summary
+      # 7️⃣ Tambahkan link report ke Summary workflow
       - name: Add Test Report link to Summary
         run: |
           echo "API Automation Test Result" >> $GITHUB_STEP_SUMMARY
