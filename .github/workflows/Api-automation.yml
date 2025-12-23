@@ -3,7 +3,7 @@ name: Otomasi API Automation
 on:
   push:
     branches:
-      - master   # branch default repo kamu
+      - master   # sesuaikan default branch Anda
   pull_request:
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
         working-directory: ./OtomasiAPI
         run: ./gradlew test --info
 
-      # 5️⃣ Upload test report sebagai artifact
+      # 5️⃣ Upload test report sebagai artifact (HTML report)
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         with:
@@ -41,24 +41,30 @@ jobs:
   deploy-pages:
     needs: api-tests
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'  # deploy hanya dari master
+    if: github.ref == 'refs/heads/master'  # deploy hanya dari master branch
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 1️⃣ Buat branch gh-pages jika belum ada
-      - name: Create gh-pages branch if not exists
+      # 1️⃣ Setup git user
+      - name: Setup Git
         run: |
-          git fetch origin
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # 2️⃣ Buat branch gh-pages jika belum ada
+      - name: Ensure gh-pages branch exists
+        run: |
           if ! git rev-parse --verify origin/gh-pages; then
             git checkout --orphan gh-pages
-            git commit --allow-empty -m "Initialize gh-pages branch"
+            git rm -rf .
+            git commit --allow-empty -m "Initial gh-pages commit"
             git push origin gh-pages
           fi
 
-      # 2️⃣ Deploy Test Report ke GitHub Pages
-      - name: Deploy Test Report
+      # 3️⃣ Deploy ke GitHub Pages
+      - name: Deploy Test Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
