@@ -3,7 +3,7 @@ name: Otomasi API Automation
 on:
   push:
     branches:
-      - master   # default branch-mu
+      - master   # branch default
   pull_request:
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
         working-directory: ./OtomasiAPI
         run: ./gradlew test --info
 
-      # 5️⃣ Upload test report sebagai artifact
+      # 5️⃣ Upload test report sebagai artifact (opsional)
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         with:
@@ -41,26 +41,41 @@ jobs:
   deploy-pages:
     needs: api-tests
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' # hanya deploy dari master branch
+    if: github.ref == 'refs/heads/master'  # hanya deploy dari master
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Git user
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
       - name: Deploy Test Report to GitHub Pages
         run: |
-          set -e
+          REPORT_DIR=OtomasiAPI/build/reports/tests/test
+
+          # Cek dulu apakah report ada
+          if [ ! -d "$REPORT_DIR" ]; then
+            echo "Report directory not found! Skipping deploy."
+            exit 0
+          fi
+
+          # Buat temporary folder untuk gh-pages
           mkdir -p temp-gh-pages
-          cp -r OtomasiAPI/build/reports/tests/test/* temp-gh-pages/
+          cp -r $REPORT_DIR/* temp-gh-pages/
           cd temp-gh-pages
+
+          # Inisialisasi git
           git init
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git checkout -b gh-pages || git checkout gh-pages
+
+          # Checkout gh-pages branch atau buat baru
+          git fetch origin gh-pages || true
+          git checkout gh-pages || git checkout -b gh-pages
+
           git add .
-          git commit -m "Deploy API test report: $(date +'%Y-%m-%d %H:%M:%S')" || echo "Nothing to commit"
-          git push origin gh-pages --force
+
+          # Hanya commit jika ada perubahan
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit. Skipping push."
+          else
+            git commit -m "Deploy API test report: $(date +'%Y-%m-%d %H:%M:%S')"
+            git push origin gh-pages --force
+          fi
