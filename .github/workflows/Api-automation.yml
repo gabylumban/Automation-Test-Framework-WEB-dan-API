@@ -56,4 +56,3 @@ jobs:
             echo "- Environment: GitHub Actions" >> $GITHUB_STEP_SUMMARY
             echo "- Report Type: Gradle Test Report" >> $GITHUB_STEP_SUMMARY
             echo "- Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
-
