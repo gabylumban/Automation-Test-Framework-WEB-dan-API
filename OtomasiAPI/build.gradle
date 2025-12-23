@@ -21,4 +21,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+
+    reports {
+        junitXml.required = true
+        html.required = true
+        html.outputLocation = file("$buildDir/reports/tests/test") // default sih sama
+    }
 }
