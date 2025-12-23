@@ -1,10 +1,9 @@
 name: Otomasi API Automation
 
-# Trigger: push ke master atau pull request
 on:
   push:
     branches:
-      - master
+      - master   # sesuaikan dengan branch default-mu
   pull_request:
 
 jobs:
@@ -12,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout kode
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -42,34 +41,19 @@ jobs:
   deploy-pages:
     needs: api-tests
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' # deploy hanya dari master
+    if: github.ref == 'refs/heads/master'   # hanya deploy dari master branch
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Git
-      - name: Setup Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      # 3️⃣ Pastikan folder report ada (buat dummy index.html kalau kosong)
-      - name: Ensure report folder exists
-        run: |
-          REPORT_DIR=OtomasiAPI/build/reports/tests/test
-          mkdir -p $REPORT_DIR
-          if [ ! -f $REPORT_DIR/index.html ]; then
-            echo "<html><body><h1>Report empty</h1></body></html>" > $REPORT_DIR/index.html
-          fi
-
-      # 4️⃣ Deploy ke GitHub Pages
       - name: Deploy Test Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./OtomasiAPI/build/reports/tests/test
           publish_branch: gh-pages
-          force_orphan: true
-          keep_files: false
+          user_name: 'GitHub Actions'
+          user_email: 'actions@github.com'
+          commit_message: 'Deploy API test report'
+          keep_files: true
