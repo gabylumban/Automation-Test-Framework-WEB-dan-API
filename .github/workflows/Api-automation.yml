@@ -8,10 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  api-automation:
+  automation:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # wajib supaya bisa push ke gh-pages jika ingin deploy
+      contents: write   # wajib supaya bisa push ke gh-pages
 
     steps:
       # 1️⃣ Checkout repository
@@ -25,30 +25,32 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3️⃣ Set gradlew executable
+      # 3️⃣ Setup gradlew executable di folder OtomasiAPI
       - name: Setup gradlew
         run: chmod +x ./OtomasiAPI/gradlew
 
-      # 4️⃣ Run Gradle tests (headless)
+      # 4️⃣ Run Gradle tests (API automation)
       - name: Run API Tests
         run: ./OtomasiAPI/gradlew test --info
 
-      # 5️⃣ Upload test report as artifact
+      # 5️⃣ Upload test report sebagai artifact
       - name: Upload Test Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
           path: ./OtomasiAPI/build/reports/tests/test
 
-      # 6️⃣ Deploy test report to GitHub Pages (opsional)
+      # 6️⃣ Deploy test report ke GitHub Pages
       - name: Deploy Test Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./OtomasiAPI/build/reports/tests/test
           publish_branch: gh-pages
+          user_name: github-actions
+          user_email: github-actions@github.com
 
-      # 7️⃣ Add Test Report link to workflow summary
+      # 7️⃣ Tambahkan link ke Summary
       - name: Add Test Report link to Summary
         run: |
           echo "API Automation Test Result" >> $GITHUB_STEP_SUMMARY
