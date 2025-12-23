@@ -3,7 +3,7 @@ name: Otomasi API Automation
 on:
   push:
     branches:
-      - master   # sesuaikan dengan branch default-mu
+      - master   # default branch-mu
   pull_request:
 
 jobs:
@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout kode
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Java 17
+      # 2️⃣ Setup Java
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -41,19 +41,26 @@ jobs:
   deploy-pages:
     needs: api-tests
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'   # hanya deploy dari master branch
+    if: github.ref == 'refs/heads/master' # hanya deploy dari master branch
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Git user
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
       - name: Deploy Test Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./OtomasiAPI/build/reports/tests/test
-          publish_branch: gh-pages
-          user_name: 'GitHub Actions'
-          user_email: 'actions@github.com'
-          commit_message: 'Deploy API test report'
-          keep_files: true
+        run: |
+          set -e
+          mkdir -p temp-gh-pages
+          cp -r OtomasiAPI/build/reports/tests/test/* temp-gh-pages/
+          cd temp-gh-pages
+          git init
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git checkout -b gh-pages || git checkout gh-pages
+          git add .
+          git commit -m "Deploy API test report: $(date +'%Y-%m-%d %H:%M:%S')" || echo "Nothing to commit"
+          git push origin gh-pages --force
