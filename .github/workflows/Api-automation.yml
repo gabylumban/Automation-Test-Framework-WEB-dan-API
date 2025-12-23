@@ -1,32 +1,38 @@
-name: Otomasi API Automation (Safe Deploy)
+name: Otomasi API Automation
 
+# Trigger: push ke master atau pull request
 on:
   push:
     branches:
       - master
+  pull_request:
 
 jobs:
   api-tests:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Checkout kode
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup JDK 17
+      # 2️⃣ Setup Java 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      # 3️⃣ Pastikan gradlew executable
       - name: Make gradlew executable
         run: chmod +x OtomasiAPI/gradlew
 
+      # 4️⃣ Jalankan test dengan Gradle
       - name: Run API tests
         working-directory: ./OtomasiAPI
         run: ./gradlew test --info
 
+      # 5️⃣ Upload test report sebagai artifact
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         with:
@@ -36,20 +42,29 @@ jobs:
   deploy-pages:
     needs: api-tests
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' # deploy hanya dari master
+
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
+      # 2️⃣ Setup Git
       - name: Setup Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      # 3️⃣ Pastikan folder report ada (buat dummy index.html kalau kosong)
       - name: Ensure report folder exists
-        run: mkdir -p OtomasiAPI/build/reports/tests/test
+        run: |
+          REPORT_DIR=OtomasiAPI/build/reports/tests/test
+          mkdir -p $REPORT_DIR
+          if [ ! -f $REPORT_DIR/index.html ]; then
+            echo "<html><body><h1>Report empty</h1></body></html>" > $REPORT_DIR/index.html
+          fi
 
+      # 4️⃣ Deploy ke GitHub Pages
       - name: Deploy Test Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
