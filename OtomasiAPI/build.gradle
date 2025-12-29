@@ -2,30 +2,28 @@ plugins {
     id 'java'
 }
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
+group 'com.automation'
+version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    // Cucumber dependencies
-    testImplementation 'io.cucumber:cucumber-java:7.16.1'
-    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.16.1'
+    // JUnit 5 sesuai project lama
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 
-    // RestAssured for API testing
-    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    // Cucumber sesuai project lama
+    testImplementation 'io.cucumber:cucumber-java:8.13.0'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:8.13.0'
 
-    // JUnit Jupiter API and Engine for running tests
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+    // Rest Assured untuk API Automation
+    testImplementation 'io.rest-assured:rest-assured:5.3.0'
 
-  
+    // JSON / Object Mapper
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.16.4'
 }
 
 test {
-    useJUnitPlatform()
-    // Aktifkan plugin bawaan cucumber untuk report
-    systemProperty "cucumber.plugin", "pretty, html:build/reports/cucumber-report.html, json:build/reports/cucumber-report.json"
+    useJUnitPlatform()  // PENTING supaya JUnit 5 jalan di Gradle lama
 }
