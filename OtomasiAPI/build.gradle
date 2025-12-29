@@ -10,16 +10,25 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'io.cucumber:cucumber-java:8.11.0'
-    testImplementation 'io.cucumber:cucumber-junit:8.11.0'
+    // Cucumber stable version
+    testImplementation 'io.cucumber:cucumber-java:8.10.2'
+    testImplementation 'io.cucumber:cucumber-junit:8.10.2'
+
+    // JUnit 4
     testImplementation 'junit:junit:4.13.2'
+
+    // RestAssured for API testing
     testImplementation 'io.rest-assured:rest-assured:5.3.0'
+
+    // JSON support for RestAssured
+    testImplementation 'org.json:json:20230227'
 }
 
 test {
     useJUnit()
 }
 
+// Task to run Cucumber separately
 task cucumber(type: Test) {
     useJUnit()
     testClassesDirs = sourceSets.test.output.classesDirs
