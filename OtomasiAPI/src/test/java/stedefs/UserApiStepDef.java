@@ -1,30 +1,35 @@
-package stedefs;
+package stepdefs;
 
 import config.BaseTest;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import io.cucumber.java.en.*;
 import io.restassured.response.Response;
-import org.junit.Assert;
 import requests.UserRequest;
+
+import static org.junit.Assert.*;
 
 public class UserApiStepDef extends BaseTest {
 
-    Response response;
-    UserRequest userRequest = new UserRequest();
+    private final UserRequest userRequest = new UserRequest();
 
-    @Given("user service is available")
-    public void user_service_is_available() {
-        // setup sudah di BaseTest
+    @Given("I send GET request to get user with id {int}")
+    public void i_send_get_request_to_get_user_with_id(Integer userId) {
+        response = userRequest.getUser(userId);
     }
 
-    @When("user sends request get user")
-    public void user_sends_request_get_user() {
-        response = userRequest.getUser();
+    @Given("I send GET request to get users page {int}")
+    public void i_send_get_request_to_get_users_page(Integer page) {
+        response = userRequest.getUsersByPage(page);
     }
 
-    @Then("response status code should be {int}")
-    public void response_status_code_should_be(Integer statusCode) {
-        Assert.assertEquals(statusCode.intValue(), response.getStatusCode());
+    @Then("Response status should be {int}")
+    public void response_status_should_be(Integer expectedStatus) {
+        assertEquals(expectedStatus.intValue(), response.getStatusCode());
+    }
+
+    @Then("Response body should contain {string}")
+    public void response_body_should_contain(String key) {
+        if (key != null && !key.isEmpty()) {
+            assertTrue(response.getBody().asString().contains(key));
+        }
     }
 }
