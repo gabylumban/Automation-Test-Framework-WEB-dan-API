@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.11.2'
 }
 
 group = 'org.example'
@@ -10,21 +11,26 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
-    testImplementation("io.rest-assured:rest-assured:6.0.0")
-    // https://mvnrepository.com/artifact/org.json/json
-    implementation("org.json:json:20250517")
+
+    // ===== CUCUMBER =====
+    testImplementation 'io.cucumber:cucumber-java:7.15.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.15.0'
+
+    // ===== JUNIT =====
+    testImplementation 'junit:junit:4.13.2'
+
+    // ===== API =====
+    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    implementation 'org.json:json:20250517'
+
+    // ===== ALLURE =====
+    testImplementation 'io.qameta.allure:allure-cucumber7-jvm:2.25.0'
 }
 
 test {
-    useJUnitPlatform()
+    useJUnit()
+}
 
-    reports {
-        junitXml.required = true
-        html.required = true
-        html.outputLocation = file("$buildDir/reports/tests/test") // default sih sama
-    }
+allure {
+    version = '2.25.0'
 }
