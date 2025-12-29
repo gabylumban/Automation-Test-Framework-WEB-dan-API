@@ -10,20 +10,19 @@ repositories {
 }
 
 dependencies {
-    // Selenium & WebDriverManager
+    // Selenium
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
 
-    // Cucumber
+    // Cucumber (JUnit 5)
     testImplementation 'io.cucumber:cucumber-java:7.16.1'
     testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.16.1'
 
     // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 
-    // ⭐ INI YANG KURANG
+    // WAJIB untuk Suite runner
     testImplementation 'org.junit.platform:junit-platform-suite:1.10.0'
 }
 
