@@ -1,17 +1,12 @@
 package config;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.Before;
 
 public class BaseTest {
 
-    @BeforeAll
-    static void setup(){
-        RestAssured.baseURI = "https://reqres.in/api";
-        RestAssured.requestSpecification =
-                RestAssured.given()
-                        .header("x-api-key", "reqres_cc81c75fbb694842aafef73f927846ed")
-                        .contentType("application/json");
+    @Before
+    public void setup() {
+        RestAssured.baseURI = "https://jsonplaceholder.typicode.com";
     }
-
 }
