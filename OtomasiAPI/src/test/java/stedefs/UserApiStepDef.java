@@ -28,9 +28,6 @@ public class UserApiStepDef extends BaseTest {
 
     @Then("Response body should contain {string}")
     public void response_body_should_contain(String key) {
-        if (key != null && !key.isEmpty()) {
-            assertTrue(response.getBody().asString().contains(key));
-        }
+        assertTrue(response.getBody().asString().contains(key));
     }
 }
-
