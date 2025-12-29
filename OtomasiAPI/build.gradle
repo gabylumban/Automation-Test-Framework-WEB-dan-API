@@ -11,24 +11,24 @@ repositories {
 }
 
 dependencies {
-
-    // ===== CUCUMBER =====
-    testImplementation 'io.cucumber:cucumber-java:7.15.0'
-    testImplementation 'io.cucumber:cucumber-junit:7.15.0'
-
-    // ===== JUNIT =====
-    testImplementation 'junit:junit:4.13.2'
-
-    // ===== API =====
+    // REST Assured
     testImplementation 'io.rest-assured:rest-assured:5.4.0'
     implementation 'org.json:json:20250517'
 
-    // ===== ALLURE =====
-    testImplementation 'io.qameta.allure:allure-cucumber7-jvm:2.25.0'
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
+    // Allure
+    testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
 }
 
 test {
-    useJUnit()
+    useJUnitPlatform()
+    reports {
+        junitXml.required.set(true)
+        html.required.set(true)
+    }
 }
 
 allure {
