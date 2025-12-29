@@ -14,16 +14,46 @@ jobs:
       contents: write
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3️⃣ Setup Chrome
-      - name: Setup Chr
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v2.1.0
+
+      - name: Setup gradlew
+        working-directory: ./Web-test
+        run: chmod +x gradlew
+
+      - name: Run Cucumber Tests
+        working-directory: ./Web-test
+        run: ./gradlew clean test
+
+      - name: Prepare Cucumber Report
+        run: |
+          cp Web-test/build/cucumber-report/cucumber.html Web-test/build/cucumber-report/index.html
+
+      - name: Upload Cucumber Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-report
+          path: Web-test/build/cucumber-report
+
+      - name: Deploy Cucumber Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./Web-test/build/cucumber-report
+          publish_branch: gh-pages
+
+      - name: Add Cucumber Report link to Summary
+        run: |
+          echo "### 🥒 Cucumber Automation Test Result" >> $GITHUB_STEP_SUMMARY
+          echo "- Environment: GitHub Actions" >> $GITHUB_STEP_SUMMARY
+          echo "- Report Type: Cucumber HTML Report" >> $GITHUB_STEP_SUMMARY
+          echo "- Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
