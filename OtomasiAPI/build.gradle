@@ -2,20 +2,46 @@ plugins {
     id 'java'
 }
 
-group 'com.yourcompany'
+group 'com.example'
 version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'io.cucumber:cucumber-java:8.13.0'
-    testImplementation 'io.cucumber:cucumber-junit-platform-engine:8.13.0'
-    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.16.4'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
-tasks.test {
+dependencies {
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    
+    // Cucumber
+    testImplementation 'io.cucumber:cucumber-java:8.14.0'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:8.14.0'
+    
+    // Rest Assured
+    testImplementation 'io.rest-assured:rest-assured:5.3.0'
+    testImplementation 'io.rest-assured:json-path:5.3.0'
+    testImplementation 'io.rest-assured:xml-path:5.3.0'
+    
+    // Jackson (JSON parsing)
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.4'
+    
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.9'
+    
+    // Optional: Hamcrest assertions
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+}
+
+test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
