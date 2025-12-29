@@ -6,16 +6,9 @@ import static io.restassured.RestAssured.given;
 
 public class UserRequest {
 
-    public static Response getUsers(int page) {
-        return given()
-                .queryParam("page", page)
-                .when()
-                .get("/users");
-    }
-
-    public static Response getUserById(int id) {
+    public Response getUser() {
         return given()
                 .when()
-                .get("/users/" + id);
+                .get("/users/1");
     }
 }
