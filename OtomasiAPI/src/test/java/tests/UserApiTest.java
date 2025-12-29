@@ -2,19 +2,12 @@ package tests;
 
 import config.BaseTest;
 import requests.UserRequest;
-import io.restassured.RestAssured;
-import org.hamcrest.Matchers;
-import org.hamcrest.core.AnyOf;
 import org.junit.jupiter.api.Test;
-import utils.TestDataUtil;
-
-import static org.hamcrest.Matchers.*;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 public class UserApiTest extends BaseTest {
-
-    //Tes Positif
 
     @Test
     void getUsers_validPage() {
@@ -24,33 +17,30 @@ public class UserApiTest extends BaseTest {
                 .body("data", not(empty()))
                 .log().all();
     }
-    //Tes Negatif
+
     @Test
     void getUserById_invalidId() {
         UserRequest.getUserById(TestDataUtil.INVALID_USER_ID)
                 .then()
-                .log().all()
                 .statusCode(404)
-                .body(equalTo("{}"));
+                .body(equalTo("{}"))
+                .log().all();
     }
+
     @Test
-        void getUsers_invalidPage() {
-            UserRequest.getUsers(-1)
-                    .then()
-                    .log().all()
-                    .statusCode(200);
+    void getUsers_invalidPage() {
+        UserRequest.getUsers(TestDataUtil.INVALID_PAGE)
+                .then()
+                .statusCode(200)
+                .log().all();
     }
-    //Test Batas
+
     @Test
     void getUsers_boundaryPageZero() {
         UserRequest.getUsers(TestDataUtil.BOUNDARY_PAGE)
                 .then()
-                .log().all()
                 .statusCode(200)
-                .body("page", equalTo(1));
-
+                .body("page", equalTo(1))
+                .log().all();
     }
-
-    }
-
-
+}
