@@ -2,8 +2,8 @@ package tests;
 
 import config.BaseTest;
 import requests.UserRequest;
-import utils.TestDataUtil;
 import org.junit.jupiter.api.Test;
+import utils.TestDataUtil;
 
 import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.given;
@@ -45,4 +45,3 @@ public class UserApiTest extends BaseTest {
                 .body("page", equalTo(1));
     }
 }
-
