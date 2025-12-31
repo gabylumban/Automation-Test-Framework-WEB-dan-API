@@ -30,22 +30,9 @@ jobs:
       - name: Run API tests and generate Allure report
         run: ./gradlew clean test allureReport --no-daemon
 
-      - name: Debug Allure report files
-        run: |
-          echo "Listing Allure report files:"
-          ls -R build/reports/allure-report
-
       - name: Upload Allure Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: ./Api-test/build/reports/allure-report
-
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./Api-test/build/reports/allure-report
-
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Api-test/build/reports/allure-report
+          path: ./build/reports/allure-report/**
+          if-no-files-found: warn
