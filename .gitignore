@@ -40,3 +40,4 @@ bin/
 
 # Allure results
 allure-results/
+allure-report/
