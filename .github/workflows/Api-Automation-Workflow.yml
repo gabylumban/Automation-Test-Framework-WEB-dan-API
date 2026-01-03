@@ -33,15 +33,12 @@ jobs:
       - name: Build with Gradle
         run:
             chmod +x ./gradlew #make gradlew executable
-      - name: Build Gradle
-        run :
-            ./gradlew build #Run the build task before test
-
+     
       - name: Run API tests
         run: ./gradlew clean test
 
       - name: Generate Allure Report
-        run:  allure generate build/allure-results -o build/reports/allure-report --clean
+        run:  allure generate build/allure-results -o allure-report --clean
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub  Pages
@@ -49,8 +46,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
            personal_token : ${{ secrets.PERSONAL_TOKEN }}
-           publish_dir: build/reports/allure-report  #html yang publish
+           publish_dir: allure-report 
 
       - name: List Allure report directory
-        run: ls -lR build/reports/allure-report
+        run: ls -lR allure-report
 
