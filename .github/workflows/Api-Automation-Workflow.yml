@@ -32,7 +32,7 @@ jobs:
 
       - name: Build with Gradle
         run:
-            chmod +x ./gradlew #make gradlew executable
+          chmod +x ./gradlew #make gradlew executable
 
 
       - name: Run Tests
@@ -46,6 +46,5 @@ jobs:
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
-           personal_token : ${{ secrets.PERSONAL_TOKEN }}
-           publish_dir: Api-test/allure-report  # Directory to publish
-
+          personal_token : ${{ secrets.PERSONAL_TOKEN }}
+          publish_dir: Api-test/allure-report  # Directory to publish
