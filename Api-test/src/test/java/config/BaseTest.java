@@ -2,12 +2,12 @@ package config;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
+import org.testng.annotations.BeforeClass;
 
 public class BaseTest {
 
-    @BeforeAll
-    static void setup() {
+    @BeforeClass
+    public void setup() {
         RestAssured.baseURI = "https://reqres.in/api";
         RestAssured.requestSpecification = RestAssured
                 .given()
